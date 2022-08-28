@@ -20,14 +20,21 @@ class ApplicationController < Sinatra::Base
     user.update(login_state: 0) unless user.login_state == 0
   end
 
-  get "/meal_plan" do
-   meal_plan = User.all.find_by(login_state: 1).meal_week_plan_id
-   meal_plan == nil ? "you don't have a meal plan yet"
-   : id_meal_plan = MealWeekPlan.all.find(meal_plan).attributes.values.drop(1)
+   get "/meal_plan" do
+    user = User.all.find_by(login_state: 1)
+    user.meals.destroy_all
 
-    meal_for_week = id_meal_plan.map do |t|
-      MealPlan.find t
-     end
-     meal_for_week.to_json
-  end
+    breakfast = Meal.all.where(meal_type: "breakfast")
+    snack = Meal.all.where(meal_type: "snack")
+    lunch = Meal.all.where(meal_type: "lunch")
+    dinner = Meal.all.where(meal_type: "dinner")
+
+    
+      UserMeal.create(user_id: user.id, meal_id:  breakfast[rand(breakfast.length)].id)
+      UserMeal.create(user_id: user.id, meal_id: snack[rand(snack.length)].id)
+      UserMeal.create(user_id: user.id, meal_id: lunch[rand(lunch.length)].id)
+      UserMeal.create(user_id: user.id, meal_id: dinner[rand(dinner.length)].id)
+
+      User.all.find_by(login_state: 1).meals.to_json
+   end  
 end

@@ -1,7 +1,4 @@
 class User < ActiveRecord::Base
-    has_many :meal_week_plans
-
-    def pick_meal_plan meal_week_plan_id
-        self.update meal_week_plan_id: MealWeekPlan.all.find(meal_week_plan_id).id
-    end
+    has_many :user_meals
+    has_many :meals, through: :user_meals
 end
